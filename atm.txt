@@ -1,0 +1,189 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, LabelEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.tree import DecisionTreeClassifier  
+from sklearn.pipeline import Pipeline
+
+data = pd.read_csv('/kdd_train.csv')
+
+data.columns = data.columns.str.strip()
+label_encoder = LabelEncoder()
+y = label_encoder.fit_transform(data['labels'])
+X = data.drop('labels', axis=1)
+
+categorical_cols = ['protocol_type', 'service', 'flag']
+numerical_cols = ['duration', 'src_bytes', 'dst_bytes', 'land', 'wrong_fragment', 'urgent', 'hot',
+                  'num_failed_logins', 'logged_in', 'num_compromised', 'root_shell', 'su_attempted', 
+                  'num_root', 'num_file_creations', 'num_shells', 'num_access_files', 'num_outbound_cmds',
+                  'is_host_login', 'is_guest_login', 'count', 'srv_count', 'serror_rate', 'srv_serror_rate',
+                  'rerror_rate', 'srv_rerror_rate', 'same_srv_rate', 'diff_srv_rate', 'srv_diff_host_rate',
+                  'dst_host_count', 'dst_host_srv_count', 'dst_host_same_srv_rate', 'dst_host_diff_srv_rate',
+                  'dst_host_same_src_port_rate', 'dst_host_srv_diff_host_rate', 'dst_host_serror_rate', 
+                  'dst_host_srv_serror_rate', 'dst_host_rerror_rate', 'dst_host_srv_rerror_rate']
+
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numerical_cols), ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_cols)])
+
+
+HARINE SELVARAJ 23ADR053 <harineselvaraj.23aid@kongu.edu>
+Tue, Nov 26, 4:18 PM (1 day ago)
+to me
+
+import java.util.Scanner;
+
+// Base class representing a bank account
+class BankAccount {
+    protected String accountNumber;
+    protected double balance;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposit successful! New Balance: " + balance);
+        } else {
+            System.out.println("Invalid deposit amount!");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrawal successful! New Balance: " + balance);
+        } else {
+            System.out.println("Invalid or insufficient funds for withdrawal.");
+        }
+    }
+}
+
+// Derived class representing a checking account
+class CheckingAccount extends BankAccount {
+    private static final double OVERDRAFT_LIMIT = 500;
+
+    public CheckingAccount(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+
+    // Method overriding for withdrawal with overdraft protection
+    @Override
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance + OVERDRAFT_LIMIT) {
+            balance -= amount;
+            System.out.println("Checking Account Withdrawal successful! New Balance: " + balance);
+        } else {
+            System.out.println("Withdrawal exceeds overdraft limit!");
+        }
+    }
+}
+
+// Derived class representing a savings account
+class SavingsAccount extends BankAccount {
+    private static final double MIN_BALANCE = 100;
+
+    public SavingsAccount(String accountNumber, double balance) {
+        super(accountNumber, balance);
+    }
+
+    // Method overriding for withdrawal with minimum balance protection
+    @Override
+    public void withdraw(double amount) {
+        if (amount > 0 && (balance - amount) >= MIN_BALANCE) {
+            balance -= amount;
+            System.out.println("Savings Account Withdrawal successful! New Balance: " + balance);
+        } else {
+            System.out.println("Withdrawal exceeds minimum balance requirement!");
+        }
+    }
+}
+
+// Main ATM class for handling operations
+class ATM {
+    private BankAccount account;
+
+    public ATM(BankAccount account) {
+        this.account = account;
+    }
+
+    public void showMenu() {
+        Scanner scanner = new Scanner(System.in);
+        int option;
+        do {
+            System.out.println("\nWelcome to ATM Simulator");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Deposit");
+            System.out.println("3. Withdraw");
+            System.out.println("4. Exit");
+            System.out.print("Choose an option: ");
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    System.out.println("Current Balance: " + account.getBalance());
+                    break;
+                case 2:
+                    System.out.print("Enter amount to deposit: ");
+                    double depositAmount = scanner.nextDouble();
+                    account.deposit(depositAmount);
+                    break;
+                case 3:
+                    System.out.print("Enter amount to withdraw: ");
+                    double withdrawAmount = scanner.nextDouble();
+                    account.withdraw(withdrawAmount);
+                    break;
+                case 4:
+                    System.out.println("Thank you for using the ATM. Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+            }
+        } while (option != 4);
+        scanner.close();
+    }
+}
+
+// Main class to run the ATM simulator
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+       
+        System.out.println("Choose Account Type:");
+        System.out.println("1. Checking Account");
+        System.out.println("2. Savings Account");
+        System.out.print("Your choice: ");
+        int choice = scanner.nextInt();
+       
+        BankAccount account;
+        if (choice == 1) {
+            account = new CheckingAccount("CHK123", 1000);
+        } else if (choice == 2) {
+            account = new SavingsAccount("SAV123", 1000);
+        } else {
+            System.out.println("Invalid choice! Defaulting to Checking Account.");
+            account = new CheckingAccount("CHK123", 1000);
+        }
+       
+        ATM atm = new ATM(account);
+        atm.showMenu();
+       
+        scanner.close();
+    }
+}
